@@ -5,7 +5,7 @@ This Service exposes the passwrd and group files that are in /etc/passwrd and /e
 
 The Service was developed using the SpringBoot Framework and build with the Maven. The Application Service is designed by following  MVC Design Pattern (Model-View-Controller) where the Controller class (MainController.java) has been designed as the backend to handle the HTTP request, the controller returns the view which is responsible for rendering the HTML Content of the result. Also, Singleton Design Pattern is utilized to maintain the Single Instance of the Controller class at all times. 
 
-Inorder to test the Application Service, Unit-Tests usig JUnit and Mockito has been designed to check the correctness of developed functionality. Also, PowerMockito libraries are used to mock the static and final classess involved in the functionality.
+Inorder to test the Application Service, Unit-Tests using JUnit and Mockito has been designed to check the correctness of developed functionality. Also, PowerMockito libraries are used to mock the static and final classess involved in the functionality.
 
 
 Inorder to run the service clone the repository to the local system and then follow the command below to cd to the code respository folder.
