@@ -44,7 +44,7 @@ http://localhost:8080/users
    - shell
    
 
-* Getting the user infomration based on the exact match of the shell parameter path.
+* Getting the user information based on the exact match of the shell parameter path.
 ```
 http://localhost:8080/users/query?shell=%2Fusr%2Fbin%2Ffalse
 
