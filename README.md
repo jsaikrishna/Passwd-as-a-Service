@@ -8,6 +8,12 @@ The Service was developed using the SpringBoot Framework and build with the Mave
 Inorder to test the Application Service, Unit-Tests has been designed to check the correctness of developed functionality. Mockito and PowerMockito libraries are used to mock the static and final classess involved in the functionlaity.
 
 
+Inorder to run the application clone the repository to the local system and then follow the command below to cd to the code respository folder.
+
+```
+cd Passwd-as-a-Service/passwd/
+
+```
 As the application servcie is developed using the SpingFramework, follow the command below to Start the Service.
 
 ```
