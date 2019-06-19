@@ -1,14 +1,14 @@
 # Passwd-as-a-Service
 
-The Service exposes the passwrd and group files that are in /etc/passwrd and /etc/group in a UNIX like System. The Main aim of the service is to create a HTTP Service that generates the response based on query to the HTTP Service.
+This Service exposes the passwrd and group files that are in /etc/passwrd and /etc/group in a UNIX like System. The Main aim is to create an HTTP Service that generates the user and group response based on user or group parameters query to Service.
 
 
-The Service was developed using the SpringBoot Framework and build with the Maven. The Application Service is designed using MVC Pattern (Model-View-Controller) where the Controller class (MainController.java) has been designed in the backend to handle the HTTP request, the controller returns the view which is responsible for rendering the HTML Content of the result.
+The Service was developed using the SpringBoot Framework and build with the Maven. The Application Service is designed by following  MVC Design Pattern (Model-View-Controller) where the Controller class (MainController.java) has been designed as the backend to handle the HTTP request, the controller returns the view which is responsible for rendering the HTML Content of the result. Also, Singleton Design Pattern is utilized to maintain the Single Instance of the Controller class at all times. 
 
-Inorder to test the Application Service, Unit-Tests has been designed to check the correctness of developed functionality. Mockito and PowerMockito libraries are used to mock the static and final classess involved in the functionlaity.
+Inorder to test the Application Service, Unit-Tests usig JUnit and Mockito has been designed to check the correctness of developed functionality. Also, PowerMockito libraries are used to mock the static and final classess involved in the functionality.
 
 
-Inorder to run the application clone the repository to the local system and then follow the command below to cd to the code respository folder.
+Inorder to run the service clone the repository to the local system and then follow the command below to cd to the code respository folder.
 
 ```
 cd Passwd-as-a-Service/passwd/
@@ -51,7 +51,7 @@ http://localhost:8080/users/query?shell=%2Fusr%2Fbin%2Ffalse
 ```
 
 
-* Getting the user's based on the provided user-id (uid) which is an integer. Also, this request returns the 404 Error if the  the specified user resource with provided user-id (uid) is not found.
+* Getting the user's based on the provided user-id (uid) which is an integer. Also, this request returns the 404 Error if the  the user resource with provided user-id (uid) is not found.
 
 ```
 http://localhost:8080/users/uid
