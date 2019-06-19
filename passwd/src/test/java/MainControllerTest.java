@@ -38,7 +38,7 @@ public class MainControllerTest {
 
 
     @Before
-    public void setUp(){
+    public void setUp() {
         name = "testName";
         sh = "shell";
 
@@ -48,10 +48,9 @@ public class MainControllerTest {
         when(mockPaswrdData.getUsers()).thenReturn(passwrdSet);
 
 
-
         when(mockPaswrdData.getShellQuery(sh)).thenReturn(passwrdSet);
 
-        id=0;
+        id = 0;
         when(mockPaswrdData.getUidQuery(id)).thenReturn(passwrd);
 
         when(mockPaswrdData.getOptionalUsers(name, 0, 0, "thisIsAComment", "home", sh)).thenReturn(passwrdSet);
@@ -80,45 +79,45 @@ public class MainControllerTest {
     }
 
     @Test
-    public void TestOptionalUser(){
+    public void TestOptionalUser() {
         HashSet<Passwrd> result = mainControllerTest.optionalUsers(name, 0, 0, "thisIsAComment", "home", sh);
         assertEquals(result, passwrdSet);
 
     }
 
     @Test
-    public void testShellQuery(){
+    public void testShellQuery() {
         HashSet<Passwrd> result = mainControllerTest.shellQuery(sh);
         assertEquals(result, passwrdSet);
     }
 
     @Test
-    public void testUidQuery(){
+    public void testUidQuery() {
         Passwrd result = mainControllerTest.uidQuery(id);
         assertEquals(result, passwrd);
 
     }
 
     @Test
-    public void testGetIdGroups(){
-       HashSet<Group> result = mainControllerTest.getIdGroups(id);
-       assertEquals(result, groupSet);
+    public void testGetIdGroups() {
+        HashSet<Group> result = mainControllerTest.getIdGroups(id);
+        assertEquals(result, groupSet);
     }
 
     @Test
-    public void testGetGroups(){
+    public void testGetGroups() {
         HashSet<Group> result = mainControllerTest.getGroups();
         assertEquals(result, groupSet);
     }
 
     @Test
-    public void testOptionalGroupUsers(){
+    public void testOptionalGroupUsers() {
         HashSet<Group> result = mainControllerTest.optionalGroupUsers(name, id, members);
         assertEquals(result, groupSet);
     }
 
     @Test
-    public void testGetGidGroup(){
+    public void testGetGidGroup() {
         Group result = mainControllerTest.getGidGroup(id);
         assertEquals(result, group);
     }

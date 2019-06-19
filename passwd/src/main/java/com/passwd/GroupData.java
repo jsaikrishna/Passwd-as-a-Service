@@ -6,154 +6,137 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class GroupData {
 
-    public GroupData(){};
+    public GroupData() {
+    }
 
-    public Group groupObj = new Group();
 
     public static GroupData instance = null;
-    public static GroupData getInstance(){
-        if(instance == null)
+
+    public static GroupData getInstance() {
+        if (instance == null)
             instance = new GroupData();
         return instance;
     }
 
-    public List<Group> getData(){
-        List<Group> inputList = new ArrayList<>();
+    public List<Group> getData() {
+        List<Group> inputLines = new ArrayList<>();
         try {
-
-            inputList = new ArrayList<>();
             Path path = Paths.get("/private/etc/group");
             List<String> lines = Files.readAllLines(path);
 
-            for (String input_line : lines) {
-                if (input_line.contains(":")) {
-                    String[] input_line_array = input_line.split(":");
-                    if (input_line_array.length == 4) {
-                        List<String> memberGroups = new ArrayList<String>();
-                        String[] members = input_line_array[3].split(",");
-                        for (String mem : members)
-                            memberGroups.add(mem);
-                        Group gp = new Group(input_line_array[0], Integer.parseInt(input_line_array[2]), memberGroups);
-                        inputList.add(gp);
-                    } else {
-                        Group gp = new Group(input_line_array[0], Integer.parseInt(input_line_array[2]), new ArrayList<>());
-                        inputList.add(gp);
-                    }
-                }
-            }
+            return lines.stream()
+                    .filter(line -> line.contains(":"))
+                    .map(this::createGroup)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println(e);
+            return null;
+
         }
-        return inputList;
+    }
+
+    private Group createGroup(String line) {
+
+
+        String[] input_line_array = line.split(":");
+
+        if (input_line_array[0].isEmpty()
+                || input_line_array[1].isEmpty()
+                || input_line_array[2].isEmpty()
+                )
+            return null;
+
+
+
+        List<String> memberGroups = input_line_array.length == 4  ? getMembers(input_line_array[3]) : new ArrayList<>();
+        return new Group(input_line_array[0], Integer.parseInt(input_line_array[2]), memberGroups);
+    }
+
+    private List<String> getMembers(String s) {
+        return Stream.of(s.split(",")).collect(Collectors.toList());
     }
 
 
-    public HashSet<Group> getUserGroups(int id){
-        List<Group> inputList1 = getData();
-        HashSet<Group> userGroupsList = new HashSet<>();
-        for(Group g: inputList1){
-            if(g.getGid() == id){
-                if(!userGroupsList.contains(g))
-                    userGroupsList.add(g);
-            }
-        }
-        return userGroupsList;
+    public HashSet<Group> getUserGroups(int id) {
+        List<Group> groups = getData();
+        return groups.stream()
+                .filter(group -> group.getGid() == id)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
-    public HashSet<Group> getGroups(){
-        List<Group> inputList2 = getData();
-        HashSet<Group> groupsList = new HashSet<>();
+    public HashSet<Group> getGroups() {
+        return new HashSet<>(getData());
 
-        for(Group g: inputList2){
-            if(!groupsList.contains(g))
-                groupsList.add(g);
-        }
-        return groupsList;
     }
 
 
-    public HashSet<Group> getOptionalGroup(String name, Integer gid, List<String> members){
+    public HashSet<Group> getOptionalGroup(String name, Integer gid, List<String> members) {
         List<Group> inputList3 = getData();
+        HashSet<Group> nameSet = getName(name, inputList3);
+        HashSet<Group> gidSet = getGid(gid, nameSet);
+        return getMembers(members, gidSet);
+    }
 
+    private HashSet<Group> getName(String name, List<Group> inputList) {
+        if (name != null) {
+            return inputList.stream()
+                    .filter(group -> group.getName().equals(name))
+                    .collect(Collectors.toCollection(HashSet::new));
+        }
+        return new HashSet<>(inputList);
+    }
 
-        HashSet<Group> nameSet = new HashSet<>();
-        if(name != null){
-            for(Group g: inputList3){
-                if(g.getName().equals(name)){
-                    if(!nameSet.contains(g))
-                        nameSet.add(g);
-                }
-            }
+    private HashSet<Group> getGid(Integer gid, HashSet<Group> nameSet) {
+        if (gid != null) {
+            return nameSet.stream()
+                    .filter(group -> group.getGid() == gid)
+                    .collect(Collectors.toCollection(HashSet::new));
         }
-        else{
-            nameSet = new HashSet<>(inputList3);
-        }
+        return nameSet;
+    }
 
-        HashSet<Group> gidSet = new HashSet<>();
-        if((Integer)gid != null){
-            for(Group g: nameSet){
-                if(g.getGid() == gid){
-                    if(!gidSet.contains(g))
-                        gidSet.add(g);
-                }
-            }
-        }
-        else{
-            gidSet = nameSet;
-        }
+    private HashSet<Group> getMembers(List<String> members, HashSet<Group> gidSet) {
+        if (members == null) return gidSet;
+        List<String> filteredMembers = members.stream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        HashSet<Group> membersSet = new HashSet<>();
-        boolean find = false;
-        if(members != null) {
-            for (String mem : members) {
-                if (mem != null) {
-                    for (Group g : gidSet) {
-                        if (g.getMembers().contains(mem)) {
-                            find = true;
-                            if(!membersSet.contains(g)){
-                                membersSet.add(g);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        HashSet<Group> membersSet = gidSet.stream()
+                .filter(group -> filteredMembers.stream().anyMatch(member -> group.getMembers().contains(member)))
+                .collect(Collectors.toCollection(HashSet::new));
+
+        if (membersSet.size() == 0) return gidSet;
+
 
         Iterator<Group> itr = membersSet.iterator();
-        while (itr.hasNext()){
+        while (itr.hasNext()) {
             Group gm = itr.next();
-            for(String mem: members){
-                if(!gm.toString().contains(mem)){
+            for (String mem : members) {
+                if (!gm.toString().contains(mem)) {
                     itr.remove();
                 }
             }
         }
-
-        if(find == false){
-            membersSet = gidSet;
-        }
-
-        HashSet<Group> optionalGroupSet = new HashSet<>();
-        for(Group g: membersSet){
-            if(!optionalGroupSet.contains(g))
-                optionalGroupSet.add(g);
-        }
-        return optionalGroupSet;
+        return membersSet;
     }
 
-    public Group getGroupGid(int id){
+    public Group getGroupGid(int id) {
         List<Group> inputList1 = getData();
-        Group result = null;
-        for(Group g: inputList1){
-            if(g.getGid() == id) {
-                result = g;
+        Group resultObject = null;
+        for (Group g : inputList1) {
+            if (g.getGid() == id) {
+                resultObject = g;
+                break;
             }
         }
-        return result;
+        return resultObject;
     }
 }

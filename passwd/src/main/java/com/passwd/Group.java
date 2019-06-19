@@ -1,4 +1,5 @@
 package com.passwd;
+
 import java.util.*;
 
 public class Group {
@@ -7,9 +8,10 @@ public class Group {
     private int gid;
     private List<String> members;
 
-    public Group(){}
+    public Group() {
+    }
 
-    public Group(String name, int gid, List<String> members){
+    public Group(String name, int gid, List<String> members) {
         this.setName(name);
         this.setGid(gid);
         this.setMembers(members);
@@ -40,7 +42,7 @@ public class Group {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String open = "{";
         String namePrint = "name";
         String gidPrint = "gid";
@@ -49,6 +51,6 @@ public class Group {
         String commaPrint = ",";
         String close = "}";
 
-        return open + namePrint + colonPrint + name + commaPrint +gidPrint + colonPrint + gid + commaPrint + membersPrint + colonPrint + members + close;
+        return open + namePrint + colonPrint + name + commaPrint + gidPrint + colonPrint + gid + commaPrint + membersPrint + colonPrint + members + close;
     }
 }

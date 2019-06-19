@@ -9,9 +9,10 @@ public class Passwrd {
     private String home;
     private String shell;
 
-    public Passwrd() {}
+    public Passwrd() {
+    }
 
-    public Passwrd(String name, int uid, int gid, String comment, String home, String shell){
+    public Passwrd(String name, int uid, int gid, String comment, String home, String shell) {
         this.setName(name);
         this.setUid(uid);
         this.setGid(gid);
@@ -69,7 +70,7 @@ public class Passwrd {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String open = "{";
         String namePrint = "name";
         String uidPrint = "uid";
